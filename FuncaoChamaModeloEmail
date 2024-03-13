@@ -1,0 +1,29 @@
+'Função / Encapsulamento de Macro para chamar Modelo de e-mail para Outlook
+'
+'
+
+Sub AlinhamentoPessoaFisica() 'Alinhamento Pessoa Física
+    Dim app As Object 'Declaração de variável do tipo Object
+    Dim item As Object 'Declaração de variável do tipo Object
+    
+    ' Crie uma instância do Outlookb para abertura da aplicação - Deve estar instalado no Windows (pacote office)
+    Set app = CreateObject("Outlook.Application")
+
+    'Opcional
+    'Criei três modelos de e-mail para enriquecer
+    ' Verificar a hora atual para definir saudação
+    Select Case Hour(Now)
+        Case 0 To 11
+            ' Abra o modelo de e-mail
+            Set item = app.CreateItemFromTemplate("C:\Users\jo060139\AppData\Roaming\Microsoft\Templates\Alinhamento Pessoa Física Dia.msg") ' Local do modelo de e-mail
+        Case 12 To 17
+            'Abra o modelo de e-mail
+            Set item = app.CreateItemFromTemplate("C:\Users\jo060139\AppData\Roaming\Microsoft\Templates\Alinhamento Pessoa Física Tarde.msg") ' Local do modelo de e-mail
+        Case Else
+            'Abra o modelo de e-mail
+            Set item = app.CreateItemFromTemplate("C:\Users\jo060139\AppData\Roaming\Microsoft\Templates\Alinhamento Pessoa Física Noite.msg") ' Local do modelo de e-mail
+    End Select
+    
+    ' Exiba o e-mail
+    item.Display
+End Sub
