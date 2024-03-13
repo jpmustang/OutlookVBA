@@ -1,0 +1,24 @@
+'Macro criada para adicionar saudação baseada no horário
+'de 0:00 até as 11:59 -> "Bom dia,"
+'de 12:00 até as 17:59 -> "Boa tarde,"
+'após 17:59 -> "Boa noite,"
+
+Sub AdicionarSaudacao()
+    Dim saudacao As String 'Declaração de vairável para receber saudação
+    
+    ' Verificar a hora atual
+    Select Case Hour(Now)
+        Case 0 To 11
+            saudacao = "Bom dia,"
+        Case 12 To 17
+            saudacao = "Boa tarde,"
+        Case Else
+            saudacao = "Boa noite,"
+    End Select
+
+    ' Adicionar saudação ao corpo do e-mail
+    ' Definido para inserir saudação com formatação fonte Arial tamanho 12.
+    If TypeName(Application.ActiveInspector.CurrentItem) = "MailItem" Then
+        Application.ActiveInspector.CurrentItem.HTMLBody = "<br><br><div style='font-family: Arial; font-size: 12pt; line-height: 1;'>" & saudacao & "</div><br><br>" & Application.ActiveInspector.CurrentItem.HTMLBody
+    End If
+End Sub
