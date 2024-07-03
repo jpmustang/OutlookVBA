@@ -1,0 +1,67 @@
+Sub ContarEmailsPorDia()
+    'Declaração de variáveis
+    Dim olApp As Outlook.Application
+    Dim olNamespace As Outlook.NameSpace
+    Dim olFolder As Outlook.MAPIFolder
+    Dim olItems As Outlook.Items
+    Dim olMail As Object
+    Dim olSentItems As Outlook.Items
+    Dim olSentMail As Outlook.MailItem
+    Dim dateCount As Date
+    Dim count As Integer
+    Dim emailBody As String
+    
+    ' Inicializa o Outlook
+    Set olApp = New Outlook.Application
+    Set olNamespace = olApp.GetNamespace("MAPI")
+    
+    ' Obtém a pasta "Itens Enviados" do Outlook
+    Set olFolder = olNamespace.GetDefaultFolder(olFolderSentMail)
+    Set olItems = olFolder.Items
+    
+    ' Filtra os itens enviados
+    olItems.Sort "[SentOn]"
+    olItems.IncludeRecurrences = True
+    
+    ' Inicia o corpo do e-mail
+    emailBody = "Data       Quantidade" & vbCrLf
+    
+    ' Loop através de todos os itens enviados
+    For Each olMail In olItems
+        If TypeName(olMail) = "MailItem" Then ' Verifica se é um item de e-mail
+            ' Verifica a data de envio
+            If DateValue(olMail.SentOn) = dateCount Then
+                count = count + 1
+            Else
+                ' Adiciona a data e a quantidade ao corpo do e-mail
+                If dateCount <> #1/1/4501# Then
+                    emailBody = emailBody & Format(dateCount, "dd/mm/yyyy") & "   " & count & vbCrLf
+                End If
+                dateCount = DateValue(olMail.SentOn)
+                count = 1
+            End If
+        End If
+    Next olMail
+    
+    ' Exibe a contagem para a última data
+    If dateCount <> #1/1/4501# Then
+        emailBody = emailBody & Format(dateCount, "dd/mm/yyyy") & "   " & count & vbCrLf
+    End If
+    
+    ' Cria um novo e-mail
+    Set olSentMail = olApp.CreateItem(olMailItem)
+    With olSentMail
+        .Body = emailBody ' Define o corpo do e-mail
+        .Display ' Abre o e-mail para edição
+    End With
+    
+    ' Limpa a memória de variáveis
+    Set olApp = Nothing
+    Set olNamespace = Nothing
+    Set olFolder = Nothing
+    Set olItems = Nothing
+    Set olMail = Nothing
+    Set olSentItems = Nothing
+    Set olSentMail = Nothing
+    
+End Sub
